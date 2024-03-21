@@ -64,6 +64,7 @@ export const EventsPage = () => {
   };
 
   return (
+    // Searchbar
     <Box p={4}>
       <h1>All Events</h1>
       <Input
@@ -73,6 +74,8 @@ export const EventsPage = () => {
         onChange={handleSearch}
         mb={4}
       />
+
+      {/* Search on Categories */}
       <Select value={selectedCategory} onChange={handleCategoryChange} mb={4}>
         <option value="">All Categories</option>
         {/* Populate with fetched categories */}
@@ -82,10 +85,12 @@ export const EventsPage = () => {
           </option>
         ))}
       </Select>
+
+      {/* list of events */}
       {filteredEvents.map((event) => (
-        <Link key={event.id} to={`/events/${event.id}`}>
+        <Link key={event.id} to={`/event/${event.id}`}>
           <Box
-            borderWidth="1px"
+            borderWidth="10px"
             borderRadius="lg"
             p={4}
             mb={4}
@@ -103,6 +108,8 @@ export const EventsPage = () => {
           </Box>
         </Link>
       ))}
+
+      {/* Button that links to a AddEventform */}
       <Link to="/add-event">
         <Button colorScheme="blue">Add Event</Button>
       </Link>
