@@ -13,14 +13,6 @@ export const EventPage = () => {
   const [formData, setFormData] = useState({});
   const toast = useToast();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
@@ -58,7 +50,6 @@ export const EventPage = () => {
           isClosable: true,
         });
         setEditMode(false);
-        window.location.href = "/events"; // Redirect to events page
       } else {
         throw new Error("Failed to update event");
       }
@@ -75,6 +66,7 @@ export const EventPage = () => {
   };
 
   const handleDeleteClick = async () => {
+    console.log("Delete button clicked"); // Add this line
     try {
       const response = await fetch(`http://localhost:3000/events/${eventId}`, {
         method: "DELETE",
@@ -86,7 +78,8 @@ export const EventPage = () => {
           duration: 3000,
           isClosable: true,
         });
-        window.location.href = "/events"; // Redirect to events page
+        // Redirect to events page after deletion
+        window.location.href = "/events";
       } else {
         throw new Error("Failed to delete event");
       }
@@ -117,15 +110,17 @@ export const EventPage = () => {
       {editMode ? (
         <EventEditForm
           formData={formData}
-          onChange={handleChange}
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
           onSave={handleSave}
           onCancel={handleCancel}
         />
       ) : (
         <>
           <EventDetails event={event} />
-          <DeleteButton onClick={handleDeleteClick} />
-          <EditButton onClick={() => setEditMode(true)} />
+          {!editMode && <DeleteButton onClick={handleDeleteClick} />}
+          {!editMode && <EditButton onClick={() => setEditMode(true)} />}
         </>
       )}
     </Box>

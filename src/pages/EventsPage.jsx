@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Box, Button, Input, Select } from "@chakra-ui/react";
+import { EventCard } from "../components/EventCard";
+import { SearchBar } from "../components/SearchBar";
+import { CategoryFilter } from "../components/CategoryFilter";
 
 export const EventsPage = () => {
   const [events, setEvents] = useState([]);
@@ -35,14 +38,14 @@ export const EventsPage = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    filterEvents(e.target.value, selectedCategory);
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    filterEvents(value, selectedCategory);
   };
 
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-    filterEvents(searchTerm, e.target.value);
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+    filterEvents(searchTerm, value);
   };
 
   const filterEvents = (searchTerm, selectedCategory) => {
@@ -64,52 +67,21 @@ export const EventsPage = () => {
   };
 
   return (
-    // Searchbar
     <Box p={4}>
       <h1>All Events</h1>
-      <Input
-        type="text"
-        placeholder="Search events..."
-        value={searchTerm}
-        onChange={handleSearch}
-        mb={4}
+      <SearchBar value={searchTerm} onChange={handleSearch} />
+      <CategoryFilter
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onChange={handleCategoryChange}
       />
 
-      {/* Search on Categories */}
-      <Select value={selectedCategory} onChange={handleCategoryChange} mb={4}>
-        <option value="">All Categories</option>
-        {/* Populate with fetched categories */}
-        {categories.map((category) => (
-          <option key={category.id} value={category.name}>
-            {category.name}
-          </option>
-        ))}
-      </Select>
-
-      {/* list of events */}
       {filteredEvents.map((event) => (
         <Link key={event.id} to={`/event/${event.id}`}>
-          <Box
-            borderWidth="10px"
-            borderRadius="lg"
-            p={4}
-            mb={4}
-            cursor="pointer"
-            _hover={{ bg: "gray.100" }}
-          >
-            <h2>{event.title}</h2>
-            <p>Description: {event.description}</p>
-            <p>Start Time: {event.startTime}</p>
-            <p>End Time: {event.endTime}</p>
-            <p>
-              Categories: {event.categories ? event.categories.join(", ") : ""}
-            </p>
-            <img src={event.image} alt={event.title} />
-          </Box>
+          <EventCard event={event} />
         </Link>
       ))}
 
-      {/* Button that links to a AddEventform */}
       <Link to="/add-event">
         <Button colorScheme="blue">Add Event</Button>
       </Link>
