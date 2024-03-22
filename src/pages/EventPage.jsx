@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Heading,
-  Box,
-  Text,
-  Image,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Heading, useToast } from "@chakra-ui/react";
+import { EventDetails } from "../components/EventDetails";
+import { EventEditForm } from "../components/EventEditForm";
+import { EditButton } from "../components/EditButton";
+import { DeleteButton } from "../components/DeleteButton";
 
 export const EventPage = () => {
   const { eventId } = useParams();
@@ -20,15 +13,21 @@ export const EventPage = () => {
   const [formData, setFormData] = useState({});
   const toast = useToast();
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
   useEffect(() => {
-    // Fetch event details based on eventId
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(`http://localhost:3000/events/${eventId}`);
         if (response.ok) {
           const eventData = await response.json();
           setEvent(eventData);
-          // Set initial form data to event details
           setFormData(eventData);
         } else {
           console.error("Error fetching event details:", response.statusText);
@@ -41,19 +40,7 @@ export const EventPage = () => {
     fetchEventDetails();
   }, [eventId]);
 
-  const handleEditClick = () => {
-    setEditMode(true);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(`http://localhost:3000/events/${eventId}`, {
@@ -71,6 +58,7 @@ export const EventPage = () => {
           isClosable: true,
         });
         setEditMode(false);
+        window.location.href = "/events"; // Redirect to events page
       } else {
         throw new Error("Failed to update event");
       }
@@ -86,6 +74,39 @@ export const EventPage = () => {
     }
   };
 
+  const handleDeleteClick = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/events/${eventId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        toast({
+          title: "Event deleted",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        window.location.href = "/events"; // Redirect to events page
+      } else {
+        throw new Error("Failed to delete event");
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete event",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleCancel = () => {
+    setEditMode(false);
+    setFormData(event);
+  };
+
   if (!event) {
     return <p>Loading...</p>;
   }
@@ -94,61 +115,17 @@ export const EventPage = () => {
     <Box p={4}>
       <Heading>{event.title}</Heading>
       {editMode ? (
-        <form onSubmit={handleSubmit}>
-          <FormControl mb={4}>
-            <FormLabel>Title</FormLabel>
-            <Input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-            />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>Description</FormLabel>
-            <Textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-            />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>Start Time</FormLabel>
-            <Input
-              type="text"
-              name="startTime"
-              value={formData.startTime}
-              onChange={handleChange}
-            />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>End Time</FormLabel>
-            <Input
-              type="text"
-              name="endTime"
-              value={formData.endTime}
-              onChange={handleChange}
-            />
-          </FormControl>
-          <Button colorScheme="blue" type="submit">
-            Save
-          </Button>
-        </form>
+        <EventEditForm
+          formData={formData}
+          onChange={handleChange}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
       ) : (
         <>
-          <Text>Description: {event.description}</Text>
-          <Text>Start Time: {event.startTime}</Text>
-          <Text>End Time: {event.endTime}</Text>
-          <Text>
-            Categories: {event.categories ? event.categories.join(", ") : ""}
-          </Text>
-          <Text>
-            Created by: {event.creator ? event.creator.name : "Unknown"}
-          </Text>
-          <Image src={event.image} alt={event.title} />
-          <Button colorScheme="blue" onClick={handleEditClick}>
-            Edit
-          </Button>
+          <EventDetails event={event} />
+          <DeleteButton onClick={handleDeleteClick} />
+          <EditButton onClick={() => setEditMode(true)} />
         </>
       )}
     </Box>
