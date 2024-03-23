@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, Input, Select } from "@chakra-ui/react";
+import { Box, Button, Grid, GridItem, Heading } from "@chakra-ui/react";
 import { EventCard } from "../components/EventCard";
 import { SearchBar } from "../components/SearchBar";
 import { CategoryFilter } from "../components/CategoryFilter";
@@ -68,23 +68,36 @@ export const EventsPage = () => {
 
   return (
     <Box p={4}>
-      <h1>All Events</h1>
+      <Heading as="h1" fontSize="4xl" fontWeight="bold" mb={4}>
+        All Events
+      </Heading>
       <SearchBar value={searchTerm} onChange={handleSearch} />
       <CategoryFilter
         categories={categories}
         selectedCategory={selectedCategory}
         onChange={handleCategoryChange}
       />
-
-      {filteredEvents.map((event) => (
-        <Link key={event.id} to={`/event/${event.id}`}>
-          <EventCard event={event} />
-        </Link>
-      ))}
-
       <Link to="/add-event">
-        <Button colorScheme="blue">Add Event</Button>
+        <Button colorScheme="blue" mb={4}>
+          Add Event
+        </Button>
       </Link>
+      <Grid
+        templateColumns={{
+          base: "repeat(1, 1fr)",
+          md: "repeat(2, 1fr)",
+          lg: "repeat(3, 1fr)",
+        }}
+        gap={4}
+      >
+        {filteredEvents.map((event) => (
+          <GridItem key={event.id}>
+            <Link to={`/event/${event.id}`}>
+              <EventCard event={event} />
+            </Link>
+          </GridItem>
+        ))}
+      </Grid>
     </Box>
   );
 };

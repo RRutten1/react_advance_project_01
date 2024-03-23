@@ -1,21 +1,40 @@
-import { Box } from "@chakra-ui/react";
+import React from "react";
+import { Box, Heading, Text, Image } from "@chakra-ui/react";
 
 export const EventCard = ({ event }) => {
   return (
     <Box
-      borderWidth="10px"
+      borderWidth="1px"
       borderRadius="lg"
-      p={4}
-      mb={4}
+      overflow="hidden"
+      boxShadow="md"
       cursor="pointer"
       _hover={{ bg: "gray.100" }}
     >
-      <h2>{event.title}</h2>
-      <p>Description: {event.description}</p>
-      <p>Start Time: {event.startTime}</p>
-      <p>End Time: {event.endTime}</p>
-      <p>Categories: {event.categories ? event.categories.join(", ") : ""}</p>
-      <img src={event.image} alt={event.title} />
+      <Image
+        src={event.image}
+        alt={event.title}
+        h="200px"
+        w="100%"
+        objectFit="cover"
+      />
+      <Box p={4}>
+        <Heading as="h2" size="md" mb={2}>
+          {event.title}
+        </Heading>
+        <Text fontSize="sm" mb={2}>
+          Description: {event.description}
+        </Text>
+        <Text fontSize="sm" mb={2}>
+          Start Time: {event.startTime}
+        </Text>
+        <Text fontSize="sm" mb={2}>
+          End Time: {event.endTime}
+        </Text>
+        <Text fontSize="sm" mb={2}>
+          Categories: {event.categories ? event.categories.join(", ") : ""}
+        </Text>
+      </Box>
     </Box>
   );
 };

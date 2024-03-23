@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Flex, Button } from "@chakra-ui/react";
+import { Flex, Button, Text } from "@chakra-ui/react";
 
 export const Navigation = () => {
   return (
@@ -10,16 +10,22 @@ export const Navigation = () => {
         colorScheme="white"
         fontWeight="bold"
         fontSize="xl"
+        _hover={{ textDecoration: "underline" }}
       >
-        <Link to="/">Events</Link>
+        <Link to="/">
+          <Text textDecoration="none">Events</Text>
+        </Link>
       </Button>
       <Button
         variant="ghost"
         colorScheme="white"
         fontWeight="bold"
         fontSize="xl"
+        _hover={{ textDecoration: "underline" }}
       >
-        <Link to="/event/1">Event</Link>
+        <Link to="/event/1">
+          <Text textDecoration="none">Event</Text>
+        </Link>
       </Button>
     </Flex>
   );

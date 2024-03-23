@@ -15,7 +15,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <EventsPage />,
-        // loader: postListLoader,
       },
       {
         path: "/add-event",
@@ -24,11 +23,9 @@ const router = createBrowserRouter([
       {
         path: "/event/:eventId",
         element: <EventPage />,
-        // loader: postLoader,
-        // action: addComment,
       },
       {
-        path: "/events", // Add route for "/events" path
+        path: "/events",
         element: <EventsPage />,
       },
     ],

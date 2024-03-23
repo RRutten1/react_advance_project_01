@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Heading, useToast } from "@chakra-ui/react";
+import { Box, Heading, Button, useToast } from "@chakra-ui/react";
 import { EventDetails } from "../components/EventDetails";
 import { EventEditForm } from "../components/EventEditForm";
-import { EditButton } from "../components/EditButton";
 import { DeleteButton } from "../components/DeleteButton";
 
 export const EventPage = () => {
@@ -66,7 +65,7 @@ export const EventPage = () => {
   };
 
   const handleDeleteClick = async () => {
-    console.log("Delete button clicked"); // Add this line
+    console.log("Delete button clicked");
     try {
       const response = await fetch(`http://localhost:3000/events/${eventId}`, {
         method: "DELETE",
@@ -75,11 +74,13 @@ export const EventPage = () => {
         toast({
           title: "Event deleted",
           status: "success",
-          duration: 3000,
+          duration: 2000,
           isClosable: true,
         });
-        // Redirect to events page after deletion
-        window.location.href = "/events";
+
+        setTimeout(() => {
+          window.location.href = "/events";
+        }, 2000);
       } else {
         throw new Error("Failed to delete event");
       }
@@ -119,8 +120,10 @@ export const EventPage = () => {
       ) : (
         <>
           <EventDetails event={event} />
-          {!editMode && <DeleteButton onClick={handleDeleteClick} />}
-          {!editMode && <EditButton onClick={() => setEditMode(true)} />}
+          <Button colorScheme="green" onClick={() => setEditMode(true)} mr={4}>
+            Edit
+          </Button>
+          <DeleteButton onClick={handleDeleteClick} />
         </>
       )}
     </Box>
